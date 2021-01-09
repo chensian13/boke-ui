@@ -14,6 +14,10 @@ function initRouter () {
       path: '/login',
       component: () => import('@/views/loginRegister/login')
     }, {
+      name: 'Register',
+      path: '/register',
+      component: () => import('@/views/loginRegister/register')
+    }, {
       name: 'Users',
       path: '/users',
       component: () => import('@/views/loginRegister/users')

@@ -32,6 +32,14 @@
         >
         </el-table-column>
       </el-table>
+      <el-pagination
+        background
+        layout="prev, pager, next"
+        :total="total"
+        :page-size="params.pagesize"
+        @current-change="currentPage"
+      >
+      </el-pagination>
       <el-dialog
         :visible.sync="visible"
         title="账号信息"
@@ -50,6 +58,7 @@
   import BokeNav from '@/components/business/BokeNav.vue'
   import SearchInput from '@/components/common/SearchInput.vue'
   import Detail from './detail.vue'
+  import { queryData } from '@/api/user'
   export default {
     components: {
       BokeNav,
@@ -58,16 +67,13 @@
     },
     data () {
       return {
+        total: 0,
+        params: {
+          page: 1,
+          pagesize: 10
+        },
         userInfo: [],
-        usersData: [{
-          userName: 'csa',
-          email: '123@qq.com',
-          gender: '1'
-        }, {
-          userName: 'hujing',
-          email: '222@qq.com',
-          gender: '0'
-        }],
+        usersData: [],
         cols: [{
           prop: 'userName',
           label: '用户名'
@@ -88,8 +94,26 @@
         visible: false
       }
     },
+    mounted () {
+      this.search(1)
+    },
     methods: {
-      search () {
+      search (page) {
+        this.params.page = page
+        queryData(this.params).then(data => {
+          this.usersData = data.list
+          this.total = data.count
+          for (var e in data.list) {
+            if (data.list[e].gender === '1') {
+              data.list[e].gender = '男'
+            } else if (data.list[e].gender === '0') {
+              data.list[e].gender = '女'
+            }
+          }
+        })
+      },
+      currentPage (p) {
+        this.search(p)
       },
       read (index, rows) {
         // console.log(JSON.stringify(rows[index]))

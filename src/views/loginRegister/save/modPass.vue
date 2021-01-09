@@ -53,6 +53,7 @@
 
 <script>
   import BokeNav from '@/components/business/BokeNav.vue'
+  import { modPass } from '@/api/user'
   export default {
     components: {
       BokeNav
@@ -69,6 +70,7 @@
       };
       return {
         formData: {
+          userId: null,
           oldPass: null,
           password: null,
           password2: null
@@ -93,7 +95,10 @@
       onSubmit () {
         this.$refs['login'].validate((valid) => {
           if (valid) {
-            alert('submit!')
+            this.formData.userId = this.$storage.get('user').userId
+            modPass(this.formData).then(() => {
+              this.$message.success('修改成功')
+            })
           } else {
             console.log('error submit!!')
             return false

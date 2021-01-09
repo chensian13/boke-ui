@@ -64,6 +64,7 @@
           })
           break
         case '33':
+          this.$storage.remove('user')
           this.$router.push({
             name: 'Login',
             query: {

@@ -11,16 +11,39 @@
       >
         <el-form-item prop="email">
           <el-input
-            placeholder="请输入邮箱"
+            type="text"
+            placeholder="请输入你的邮箱号"
             v-model="formData.email"
           />
         </el-form-item>
         <el-form-item prop="password">
           <el-input
-            type="password"
-            placeholder="请输入密码"
+            type="email"
+            placeholder="请输入新密码"
             v-model="formData.password"
           />
+        </el-form-item>
+        <el-form-item prop="password2">
+          <el-input
+            type="password"
+            placeholder="请再次输入新密码"
+            v-model="formData.password2"
+          />
+        </el-form-item>
+        <el-form-item prop="code">
+          <el-input
+            type="code"
+            placeholder="输入验证码"
+            v-model="formData.code"
+          >
+            <el-button
+              slot="append"
+              type="success"
+              @click="sendMail"
+            >
+              发送邮件
+            </el-button>
+          </el-input>
         </el-form-item>
         <el-form-item
           class="login-item"
@@ -29,16 +52,8 @@
             type="info"
             @click="onSubmit"
           >
-            login
+            register
           </el-button>
-          <el-link @click="register" class="register-link">还没账号?</el-link>
-          <el-link
-            type="success"
-            class="register-link"
-            @click="findPass"
-          >
-            忘记了密码
-          </el-link>
         </el-form-item>
       </el-form>
     </el-main>
@@ -47,26 +62,44 @@
 
 <script>
   import BokeNav from '@/components/business/BokeNav.vue'
-  import { login } from '@/api/user'
-  import storage from '@/utils/storage'
+  import { register, userMail } from '@/api/user'
   export default {
     components: {
       BokeNav
     },
     data () {
+      var validatePass2 = (rule, value, callback) => {
+        if (!value) {
+          callback(new Error('请再次输入密码'));
+        } else if (value !== this.formData.password) {
+          callback(new Error('两次输入密码不一致!'));
+        } else {
+          callback();
+        }
+      };
       return {
         formData: {
           email: null,
-          password: null
+          password: null,
+          password2: null,
+          code: null
         },
         rules: {
           email: [{
             required: true,
             message: '邮箱不能为空'
           }],
+          code: [{
+            required: true,
+            message: '验证码不能为空'
+          }],
           password: [{
             required: true,
-            message: '密码不能为空'
+            message: '新密码不能为空'
+          }],
+          password2: [{
+            required: true,
+            validator: validatePass2
           }]
         }
       }
@@ -75,11 +108,10 @@
       onSubmit () {
         this.$refs['login'].validate((valid) => {
           if (valid) {
-            login(this.formData).then(data => {
-              this.$message.success('登录成功')
-              storage.set('user', data.model)
+            register(this.formData.code, this.formData).then(() => {
+              this.$message.success('注册成功')
               this.$router.push({
-                name: 'EditInfo'
+                name: 'Login'
               })
             })
           } else {
@@ -87,14 +119,11 @@
           }
         })
       },
-      register () {
-        this.$router.push({
-          name: 'Register'
-        })
-      },
-      findPass () {
-        this.$router.push({
-          name: 'FindPass'
+      sendMail () {
+        userMail({
+          receiver: this.formData.email
+        }).then(() => {
+          this.$message.success('邮件已成功发送')
         })
       }
     }

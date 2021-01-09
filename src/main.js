@@ -10,6 +10,8 @@ import storage from '@/utils/storage'
 
 Vue.config.productionTip = false
 
+Vue.prototype.$storage = storage
+
 Vue.use(ElementUI)
 Vue.use(VueResource)
 Vue.use(http)

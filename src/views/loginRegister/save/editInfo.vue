@@ -31,8 +31,8 @@
         </el-form-item>
         <el-form-item prop="gender" label="性别">
           <el-radio-group v-model="formData.gender">
-            <el-radio value="1" label="男"></el-radio>
-            <el-radio value="0" label="女"></el-radio>
+            <el-radio label="1">男</el-radio>
+            <el-radio label="0">女</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item prop="info" label="简介">
@@ -49,16 +49,8 @@
             type="info"
             @click="onSubmit"
           >
-            login
+            commit
           </el-button>
-          <el-link class="register-link">还没账号?</el-link>
-          <el-link
-            type="success"
-            class="register-link"
-            @click="findPass"
-          >
-            忘记了密码
-          </el-link>
         </el-form-item>
       </el-form>
     </el-main>
@@ -67,8 +59,7 @@
 
 <script>
   import BokeNav from '@/components/business/BokeNav.vue'
-  import { login } from '@/api/user'
-  import storage from '@/utils/storage'
+  import { updInfo, queryById } from '@/api/user'
   export default {
     components: {
       BokeNav
@@ -85,32 +76,28 @@
           tel: null
         },
         rules: {
-          userName: [{
+          email: [{
             required: true,
-            message: '用户名不能为空'
+            message: '邮箱不能为空'
           }]
         }
       }
+    },
+    mounted () {
+      queryById(this.$storage.get('user').userId).then(data => {
+        this.formData = data.model
+      })
     },
     methods: {
       onSubmit () {
         this.$refs['login'].validate((valid) => {
           if (valid) {
-            login(this.formData).then(data => {
-              this.$message.success('登录成功')
-              storage.set('user', data.model)
-              this.$router.push({
-                name: ''
-              })
+            updInfo(this.formData).then(() => {
+              this.$message.success('保存成功')
             })
           } else {
             return false
           }
-        })
-      },
-      findPass () {
-        this.$router.push({
-          name: 'FindPass'
         })
       }
     }
@@ -129,9 +116,6 @@
     border-width: thin;
     border-radius: 8px;
     margin-left: calc((100% - 420px)/2);
-  }
-  .register-link {
-    margin-left: 10px;
   }
   .login-item {
     text-align: left;

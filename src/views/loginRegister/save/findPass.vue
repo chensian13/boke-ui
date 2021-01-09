@@ -62,7 +62,7 @@
 
 <script>
   import BokeNav from '@/components/business/BokeNav.vue'
-  import { findPass, findPassMail } from '@/api/user'
+  import { findPass, userMail } from '@/api/user'
   export default {
     components: {
       BokeNav
@@ -113,7 +113,7 @@
         })
       },
       sendMail () {
-        findPassMail({
+        userMail({
           receiver: this.formData.email
         }).then(() => {
           this.$message.success('邮件已成功发送')
