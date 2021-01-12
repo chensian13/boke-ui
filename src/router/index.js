@@ -33,6 +33,10 @@ function initRouter () {
       name: 'EditInfo',
       path: '/editInfo',
       component: () => import('@/views/loginRegister/save/editInfo.vue')
+    }, {
+      name: 'AddBoke',
+      path: '/addBoke',
+      component: () => import('@/views/work/boke/addBoke.vue')
     }]
   })
 }

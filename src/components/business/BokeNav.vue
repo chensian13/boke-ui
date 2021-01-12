@@ -7,7 +7,11 @@
       class="nav"
     >
       <el-menu-item index="0">前往前台</el-menu-item>
-      <el-menu-item index="1">工作站</el-menu-item>
+      <el-submenu index="1">
+        <template slot="title">工作站</template>
+        <el-menu-item index="11">我的博客</el-menu-item>
+        <el-menu-item index="12">新增博客</el-menu-item>
+      </el-submenu>
       <el-menu-item index="2">超管权限</el-menu-item>
       <el-submenu index="3">
         <template slot="title">安全管理</template>
@@ -39,6 +43,14 @@
         console.log(key, keyPath)
         if (key === this.active) return
         switch (key) {
+        case '12':
+          this.$router.push({
+            name: 'AddBoke',
+            query: {
+              active: key
+            }
+          })
+          break
         case '2':
           this.$router.push({
             name: 'Users',
