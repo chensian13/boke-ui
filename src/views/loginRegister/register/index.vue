@@ -1,7 +1,7 @@
 <template>
   <el-container direction="vertical">
     <boke-nav />
-    <el-main class="content-wrapper login-div">
+    <el-main class="content-wrapper">
       <el-form
         label-width="0px"
         class="login-form"
@@ -40,6 +40,7 @@
               slot="append"
               type="success"
               @click="sendMail"
+              :loading="sendLoad"
             >
               发送邮件
             </el-button>
@@ -78,6 +79,7 @@
         }
       };
       return {
+        sendLoad: false,
         formData: {
           email: null,
           password: null,
@@ -120,10 +122,14 @@
         })
       },
       sendMail () {
+        this.sendLoad = true
         userMail({
           receiver: this.formData.email
         }).then(() => {
+          this.sendLoad = false
           this.$message.success('邮件已成功发送')
+        }).catch(() => {
+          this.sendLoad = false
         })
       }
     }
@@ -131,23 +137,7 @@
 </script>
 
 <style scoped>
-  .login-div {
-    text-align: center;
-    align-content: center;
-  }
-  .login-form {
-    width: 286px;
-    padding: 25px 35px;
-    margin-top: 75px;
-    border-style: solid;
-    border-width: thin;
-    border-radius: 8px;
-    margin-left: calc((100% - 356px)/2);
-  }
   .register-link {
     margin-left: 10px;
-  }
-  .login-item {
-    text-align: left;
   }
 </style>

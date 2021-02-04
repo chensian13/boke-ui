@@ -2,94 +2,70 @@
   富文本编辑参考：https://www.cnblogs.com/wjlbk/p/12884661.html
 -->
 <template>
-  <el-container direction="vertical">
-    <boke-nav />
-    <el-main class="content-wrapper login-div">
-      <el-form
-        label-width="80px"
-        class="login-form"
-        :model="formData"
-        ref="login"
-        :rules="rules"
+  <div>
+    <quill-editor
+      class="editor"
+      ref="myTextEditor"
+      :options="editorOption"
+      v-model="info"
+      @blur="onEditorBlur($event)"
+      @focus="onEditorFocus($event)"
+      @ready="onEditorReady($event)"
+      @change="onEditorChange($event)"
+    />
+    <el-dialog
+      :visible.sync="visible"
+      title="上传图片"
+      width="360px"
       >
-        <el-form-item prop="userName" label="标题">
-          <el-input
-            v-model="formData.userName"
-          />
-        </el-form-item>
-        <el-form-item prop="realname" label="副标题">
-          <el-input
-            v-model="formData.realname"
-          />
-        </el-form-item>
-        <el-form-item prop="info" label="" class="login-item">
-          <quill-editor
-            class="editor"
-            ref="myTextEditor"
-            v-model="formData.info"
-            :options="editorOption"
-            @blur="onEditorBlur($event)"
-            @focus="onEditorFocus($event)"
-            @ready="onEditorReady($event)"
-            @change="onEditorChange($event)"
-          />
-        </el-form-item>
-        <el-form-item
-          class="login-item"
-        >
-          <el-button
-            type="info"
-            @click="onSubmit"
-          >
-            save
-          </el-button>
-        </el-form-item>
-      </el-form>
-    </el-main>
-  </el-container>
+    </el-dialog>
+  </div>
 </template>
 
 <script>
-  import BokeNav from '@/components/business/BokeNav.vue'
-  // import { updInfo, queryById } from '@/api/user'
   export default {
+    props: {
+      info: {
+        type: String,
+        default: null
+      },
+      change: {
+        type: Function,
+        default: null
+      }
+    },
     components: {
-      BokeNav
     },
     data () {
       return {
-        formData: {
-          userName: null,
-          userId: null,
-          email: null,
-          realname: null,
-          info: null,
-          gender: null,
-          tel: null
-        },
-        rules: {
-          email: [{
-            required: true,
-            message: '邮箱不能为空'
-          }]
-        },
+        visible: false,
         editorOption: {
           modules: {
-            toolbar: [
-              ["bold", "italic", "underline", "strike"], // 加粗 斜体 下划线 删除线
-              ["blockquote", "code-block"], // 引用  代码块
-              // [{ header: 1 }, { header: 2 }], // 1、2 级标题
-              // [{ list: "ordered" }, { list: "bullet" }], // 有序、无序列表
-              // [{ script: "sub" }, { script: "super" }], // 上标/下标
-              [{ indent: "-1" }, { indent: "+1" }], // 缩进
-              [{ size: ["small", false, "large", "huge"] }], // 字体大小
-              [{ header: [1, 2, 3, 4, 5, 6, false] }], // 标题
-              [{ color: [] }, { background: [] }], // 字体颜色、字体背景颜色
-              [{ font: ['serif', 'monospace'] }], // 字体种类
-              // [{ align: [] }], // 对齐方式
-              // ["clean"], // 清除文本格式
-              ["link", "image"] // 链接、图片、视频
-            ], //工具菜单栏配置
+            toolbar: {
+              container: [
+                ["bold", "italic", "underline", "strike"], // 加粗 斜体 下划线 删除线
+                ["blockquote", "code-block"], // 引用  代码块
+                // [{ header: 1 }, { header: 2 }], // 1、2 级标题
+                // [{ list: "ordered" }, { list: "bullet" }], // 有序、无序列表
+                // [{ script: "sub" }, { script: "super" }], // 上标/下标
+                [{ indent: "-1" }, { indent: "+1" }], // 缩进
+                [{ size: ["small", false, "large", "huge"] }], // 字体大小
+                [{ header: [1, 2, 3, 4, 5, 6] }], // 标题
+                [{ color: [] }, { background: [] }], // 字体颜色、字体背景颜色
+                [{ font: ['serif', 'monospace'] }], // 字体种类
+                // [{ align: [] }], // 对齐方式
+                // ["clean"], // 清除文本格式
+                ["link"] // 链接、图片、视频
+              ], //工具菜单栏配置
+              handlers: {
+                // image: function(value) {
+                //   that.visible = value
+                //   if (value) {
+                //     // 触发input框选择图片文件
+                //   }
+                // }
+              }
+            }
           },
           placeholder: '', //提示
           readyOnly: false, //是否只读
@@ -97,11 +73,6 @@
           syntax: true //语法检测
         }
       }
-    },
-    mounted () {
-    //   queryById(this.$storage.get('user').userId).then(data => {
-    //     this.formData = data.model
-    //   })
     },
     methods: {
       // 失去焦点
@@ -112,40 +83,13 @@
       onEditorReady() {},
       // 值发生变化
       onEditorChange(editor) {
-        this.content = editor.html;
-        console.log(editor);
-      },
-      onSubmit () {
-        this.$refs['login'].validate((valid) => {
-          if (valid) {
-            console.log(this.formData.info)
-          } else {
-            return false
-          }
-        })
+        if (this.change)
+          this.change(editor.html)
+        console.log(editor)
       }
     }
   }
 </script>
-
-<style scoped>
-  .login-div {
-    text-align: center;
-    align-content: center;
-  }
-  .login-form {
-    width: 800px;
-    padding: 25px 35px;
-    border-style: solid;
-    border-width: thin;
-    border-radius: 8px;
-    margin-left: calc((100% - 920px)/2);
-  }
-  .login-item {
-    text-align: left;
-  }
-</style>
-
 
 <style>
   .editor {

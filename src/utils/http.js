@@ -3,7 +3,7 @@ import storage from '@/utils/storage'
 import Vue from '../main'
 
 var service = axios.create({
-  baseURL: 'http://127.0.0.1:8083/',
+  baseURL: '/api/',
   withCredentials: false, // send cookies when cross-domain requests
   timeout: 300000 // 请求的超时时间
 })

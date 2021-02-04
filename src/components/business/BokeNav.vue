@@ -45,7 +45,15 @@
         switch (key) {
         case '12':
           this.$router.push({
-            name: 'AddBoke',
+            name: 'SaveBoke',
+            query: {
+              active: key
+            }
+          })
+          break
+        case '11':
+          this.$router.push({
+            name: 'BokeList',
             query: {
               active: key
             }

@@ -23,7 +23,6 @@
           />
         </el-form-item>
         <el-form-item
-          class="login-item"
         >
           <el-button
             type="info"
@@ -102,23 +101,7 @@
 </script>
 
 <style scoped>
-  .login-div {
-    text-align: center;
-    align-content: center;
-  }
-  .login-form {
-    width: 286px;
-    padding: 25px 35px;
-    margin-top: 75px;
-    border-style: solid;
-    border-width: thin;
-    border-radius: 8px;
-    margin-left: calc((100% - 356px)/2);
-  }
   .register-link {
     margin-left: 10px;
-  }
-  .login-item {
-    text-align: left;
   }
 </style>
